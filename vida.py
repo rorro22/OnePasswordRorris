@@ -6,21 +6,74 @@ class Gestor:
         pass
 
     def leer(self, fileName):
-        with open(fileName, "r") as archivo:
-            print(archivo.read())
+        try:
+            with open(fileName, "rt", encoding="utf-8") as archivo:
+                contenido = archivo.read()
+                print("\n--- Contenido ---\n")
+                print(contenido if contenido else "(archivo vacio)")
+                print("\n")
+        except FileNotFoundError:
+            print(f"\nEl archivo {fileName} no fue encontrado en la carpeta actual.\n\n")
+        except PermissionError:
+            print(f"Sin permisos para leer {fileName}")
+        except Exception as e:
+            print(f"Error al leer: {e}")
 
     def grabar(self, fileName):
-        with open(fileName, "wb"):
-            print(fileName)
+        try:
+            texto = input("Digite el texto que desea grabar en el archivo: (Si ya existe lo puede sobrescribir.)\n")
+            carpeta = os.path.dirname(fileName)
+
+            if carpeta:
+                os.makedirs(carpeta, exist_ok=True)
+
+            with open(fileName, "wt", encoding="utf-8") as archivo:
+                archivo.write(texto)
+                print(f"Archivo creado/actualizado con exito: {fileName}")
+        except Exception as e:
+            print(f"Error al grabar: {e}")
 
     def editar(self, fileName):
-        with open(fileName, "a") as archivo:
-            texto = input("Escribe el texto que deseas que tenga el archivo: ")
-            archivo.write(f"\n{texto}")
-            print(archivo)
+        try:
+            if not os.path.exists(fileName);
+                resp = input("El archivo no existe. ¿Desea crear uno nuevo? (s/n): ").strip().lower()
+                if resp != "s":
+                    print("Operacion cancelada")
+                    return
+                
+            carpeta = os.path.dirname(fileName)
+            if carpeta:
+                os.makedirs(carpeta, exist_ok=True)
+
+            with open(fileName, "wt", encoding="utf-8") as archivo:
+                pass
+
+            escritura = input("\nTexto para agregar al final")
+            with open(fileName, "at", encoding="utf-8") as archivo:
+                archivo.write(escritura + "\n")
+            print(f"Texto añadido a: {fileName}")
+        except PermissionError:
+            print(f"\nSin permisos para escribir: {fileName}")
+        except Exception as e:
+            print(f"Error al editar: {e}")
 
     def eliminar(self, fileName):
-        os.remove(fileName)
+        try:
+            if not os.path.exists(fileName):
+                print(f"el archivo no existe: {fileName}")
+                return
+            
+            resp = input(f"Seguro que deseas eliminar {fileName} ? (s/n): ".strip().lower)
+
+            if resp == "s":
+                os.remove(fileName)
+                print("Archivo eliminado")
+            else:
+                print("Operación cancelada.")
+        except PermissionError:
+            print(f"Sin permisos para eliminar: {fileName}.")
+        except Exception as e:
+            print(f"Error al eliminar: {e}")
 
     def analisis(self, fileName):
         pass
